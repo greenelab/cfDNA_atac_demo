@@ -4,30 +4,71 @@ process_bed_to_mex
 
 ## Overview
 
-reference:
+In order to get our cfDNA data to be read as a Seurat ATAC-Seq object we
+need to make the cfDNA data look like output from 10x genomics.
+
+We will use the following format specification as our reference:
 <https://support.10xgenomics.com/single-cell-atac/software/pipelines/latest/output/matrices>
 
-fragment file of cfDNA is GM_0HR_uniq_comb_pe.sorted.bed need to remove
-last 2 columns and add a random cell barcode
+These are the descriptions of each required file type and how they map
+with cfDNA:
 
-to replace the h5 input file, we can instead use seurat::Read10X() and
-use MEX format we need to generate the following files: ├── barcodes.tsv
-├── peaks.bed └── matrix.mtx
+The **fragment file** of cfDNA is GM_0HR_uniq_comb_pe.sorted.bed, but we
+need to remove last 2 columns and add a random cell barcode
 
-barcodes.tsv: this is a single column file with random cell id’s in it,
-lets use 4000 repeating random strings
+To read in the data we will use seurat::Read10X() and use MEX data
+format To do this, we need to generate the following files:
 
-peaks.bed: GM_0HR_uniq_comb_pe.sorted.bed, but use only the first 3
-columns
+├── barcodes.tsv
 
-matrix.mtx: %%MatrixMarket matrix coordinate integer general
+├── peaks.bed
+
+└── matrix.mtx
+
+**barcodes.tsv** description: this is a single column file with random
+cell id’s in it, lets use 4000 repeating random strings
+
+**peaks.bed** description: GM_0HR_uniq_comb_pe.sorted.bed, but use only
+the first 3 columns
+
+**matrix.mtx** example:
+
+%%MatrixMarket matrix coordinate integer general
+
 %metadata_json: {“format_version”: 2, “software_version”: “8000.20.5”}
-67487 4200 19929988 67437 1 2 67412 1 2 67382 1 4 67370 1 1 67366 1 2
-67361 1 4 67348 1 2
 
-row 1 meta row 2 meta row 3: 1: peaks.bed length 2: barcodes.tsv length
-3: total number of rows in mtx NOW DATA col 1: index into peaks.bed col
-2: index into barcodes.tsv col 3: counts of feature
+67487 4200 19929988
+
+67437 1 2
+
+67412 1 2
+
+67382 1 4
+
+67370 1 1
+
+67366 1 2
+
+67361 1 4
+
+67348 1 2
+
+**Description of the MTX file lines**:
+
+row 1 meta
+
+row 2 meta
+
+row 3: 1: peaks.bed length 2: barcodes.tsv length 3: total number of
+rows in mtx
+
+row 4 - end: data in the following format
+
+col 1: index into peaks.bed
+
+col 2: index into barcodes.tsv
+
+col 3: counts of feature
 
 ## make the fragment file
 
@@ -61,13 +102,14 @@ gg = ggplot(cfdna_peak_df[subsample_idx,], aes(x=diff)) +
 gg
 ```
 
-<img src="make_mtx_file_files/figure-gfm/setup_data_files-1.png" style="display: block; margin: auto;" />
+<img src="GM_0HR_mtx_file_files/figure-gfm/setup_data_files-1.png" style="display: block; margin: auto;" />
 
 ``` r
 # match the correct read length
-read_len_idx = which(cfdna_peak_df$diff > 120 & cfdna_peak_df$diff < 180)
+read_len_idx = which(cfdna_peak_df$diff < 180 & cfdna_peak_df$diff > 120)
 chr_idx = which(cfdna_peak_df$V1 %in% c("chr11", "chr19"))
 subsample_idx = intersect(read_len_idx, chr_idx)
+#subsample_idx = chr_idx
 
 
 cfdna_peak_df = cfdna_peak_df[subsample_idx, ]
@@ -106,14 +148,14 @@ write.table(fragment_df, frag_out_file, col.names=F, quote=F, sep="\t", row.name
 bgzip(frag_out_file, frag_out_gzfile, overwrite = T)
 ```
 
-    ## [1] "/Users/davidnat/Documents/projects/greenelab/cdDNA_ATAC_demo/data/data_alexis/GM_0HR_uniq_comb_pe_fragments.tsv.gz"
+    ## [1] "/Users/davidnat/Documents/projects/greenelab/cfDNA_atac_demo/data/data_alexis/GM_0HR_uniq_comb_pe_fragments.tsv.gz"
 
 ``` r
 # make index
 indexTabix(frag_out_gzfile, format="bed")
 ```
 
-    ## [1] "/Users/davidnat/Documents/projects/greenelab/cdDNA_ATAC_demo/data/data_alexis/GM_0HR_uniq_comb_pe_fragments.tsv.gz.tbi"
+    ## [1] "/Users/davidnat/Documents/projects/greenelab/cfDNA_atac_demo/data/data_alexis/GM_0HR_uniq_comb_pe_fragments.tsv.gz.tbi"
 
 ## make the barcode file
 
@@ -127,12 +169,12 @@ knitr::kable(head(barcode_ref_df), "simple", caption="Table: barcode_ref")
 
 | barcode_ref      |
 |:-----------------|
-| GGATCGTTAGAAAAAG |
-| GGTCGGAGGAGGGCGG |
-| TGCCGTAAAACCCCTG |
-| ATCCTCCGCCCGTTAG |
-| GACTATCGTTTGTCCC |
-| ACCAGTGATCTCCTGT |
+| AGTTTGATCGAGCCAG |
+| GGGGTATTCTAGCAGC |
+| GCAGTTGAGGACTTCA |
+| AAGTACATCACGTATA |
+| ATGACGCTCGTATGGG |
+| AATCTCACCCTCCCCA |
 
 Table: barcode_ref
 
@@ -182,7 +224,7 @@ for( idx in 1:max_idx){
 ```
 
     ## [1] 1
-    ## Time difference of 2.616245 secs
+    ## Time difference of 2.959825 secs
 
 ``` r
 close(con)
@@ -193,7 +235,7 @@ peaks_df = NA
 bgzip(peaks_out_file, peaks_out_gzfile, overwrite = T)
 ```
 
-    ## [1] "/Users/davidnat/Documents/projects/greenelab/cdDNA_ATAC_demo/data/data_alexis/GM_0HR_uniq_comb_pe/features.tsv.gz"
+    ## [1] "/Users/davidnat/Documents/projects/greenelab/cfDNA_atac_demo/data/data_alexis/GM_0HR_uniq_comb_pe/features.tsv.gz"
 
 ## Make the matrix.mtx file
 
@@ -237,4 +279,4 @@ close(con)
 bgzip(mtx_out_file, mtx_out_gzfile, overwrite = T)
 ```
 
-    ## [1] "/Users/davidnat/Documents/projects/greenelab/cdDNA_ATAC_demo/data/data_alexis/GM_0HR_uniq_comb_pe/matrix.mtx.gz"
+    ## [1] "/Users/davidnat/Documents/projects/greenelab/cfDNA_atac_demo/data/data_alexis/GM_0HR_uniq_comb_pe/matrix.mtx.gz"

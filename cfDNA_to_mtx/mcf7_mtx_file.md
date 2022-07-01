@@ -4,30 +4,66 @@ mcf7_mtx_file
 
 ## Overview
 
-reference:
+In order to get our cfDNA data to be read as a Seurat ATAC-Seq object we
+need to make the cfDNA data look like output from 10x genomics.
+
+We will use the following format specification as our reference:
 <https://support.10xgenomics.com/single-cell-atac/software/pipelines/latest/output/matrices>
 
-fragment file of cfDNA is mcf7_noTx_uniq_comb_pe.sorted.bed need to
-remove last 2 columns and add a random cell barcode
+These are the descriptions of each required file type and how they map
+with cfDNA:
 
-to replace the h5 input file, we can instead use seurat::Read10X() and
-use MEX format we need to generate the following files: ├── barcodes.tsv
-├── peaks.bed └── matrix.mtx
+The **fragment file** of cfDNA is GM_0HR_uniq_comb_pe.sorted.bed, but we
+need to remove last 2 columns and add a random cell barcode
 
-barcodes.tsv: this is a single column file with random cell id’s in it,
-lets use 4000 repeating random strings
+To read in the data we will use seurat::Read10X() and use MEX data
+format To do this, we need to generate the following files:
 
-peaks.bed: mcf7_noTx_uniq_comb_pe.sorted.bed, but use only the first 3
-columns
+├── barcodes.tsv
 
-matrix.mtx: %%MatrixMarket matrix coordinate integer general
+├── peaks.bed
+
+└── matrix.mtx
+
+**barcodes.tsv** description: this is a single column file with random
+cell id’s in it, lets use 4000 repeating random strings
+
+**peaks.bed** description: GM_0HR_uniq_comb_pe.sorted.bed, but use only
+the first 3 columns
+
+**matrix.mtx** example:
+
+%%MatrixMarket matrix coordinate integer general
+
 %metadata_json: {“format_version”: 2, “software_version”: “8000.20.5”}
-67487 4200 19929988 67437 1 2 67412 1 2 67382 1 4 67370 1 1 67366 1 2
-67361 1 4 67348 1 2
 
-row 1 meta row 2 meta row 3: 1: peaks.bed length 2: barcodes.tsv length
-3: total number of rows in mtx NOW DATA col 1: index into peaks.bed col
-2: index into barcodes.tsv col 3: counts of feature
+67487 4200 19929988
+
+67437 1 2
+
+67412 1 2
+
+67382 1 4
+
+67370 1 1
+
+67366 1 2
+
+67361 1 4
+
+67348 1 2
+
+**Description of the MTX file lines**:
+
+row 1 meta
+
+row 2 meta
+
+row 3: col1: peaks.bed length; col2: barcodes.tsv length; col3: total
+number of rows in mtx
+
+row 4 - end: col1: index into peaks.bed; col2: index into barcodes.tsv;
+col3: counts of feature
 
 ## make the fragment file
 
@@ -126,12 +162,12 @@ knitr::kable(head(barcode_ref_df), "simple", caption="Table: barcode_ref")
 
 | barcode_ref      |
 |:-----------------|
-| CCAAGGCCTCTGCTTC |
-| GCCCGTATGCTCTCAC |
-| CGTATTCTTTCGCCAC |
-| GCGTGGCCATCTCGTG |
-| GGCTCTGCATCTGAAG |
-| TTACTATAATAATGAA |
+| GCATGTCGAGCTGTTC |
+| GGAATCGACGTGTAGC |
+| TCGCTGTAAAGCATCT |
+| CGTTCGCCGACGTGTA |
+| GTATACGTGGCTCACG |
+| CTCTAGCAACAGTGAG |
 
 Table: barcode_ref
 
@@ -181,7 +217,7 @@ for( idx in 1:max_idx){
 ```
 
     ## [1] 1
-    ## Time difference of 7.025873 secs
+    ## Time difference of 6.948531 secs
 
 ``` r
 close(con)
