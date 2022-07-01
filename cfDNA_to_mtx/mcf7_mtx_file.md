@@ -101,7 +101,11 @@ gg
 
 ``` r
 # match the correct read length
+# cfDNA reads that are likely nucleosome bound are between 120 and 180 bp long
 read_len_idx = which(cfdna_peak_df$diff < 180 & cfdna_peak_df$diff > 120)
+
+# to make all downstream processes go faster, lets only focus on chr11 and chr19
+# since these two chromosomes have all the genes we areinterested in analyzing.
 chr_idx = which(cfdna_peak_df$V1 %in% c("chr11", "chr19"))
 subsample_idx = intersect(read_len_idx, chr_idx)
 
@@ -162,12 +166,12 @@ knitr::kable(head(barcode_ref_df), "simple", caption="Table: barcode_ref")
 
 | barcode_ref      |
 |:-----------------|
-| GCATGTCGAGCTGTTC |
-| GGAATCGACGTGTAGC |
-| TCGCTGTAAAGCATCT |
-| CGTTCGCCGACGTGTA |
-| GTATACGTGGCTCACG |
-| CTCTAGCAACAGTGAG |
+| GGTCTAGCCTCCCGGC |
+| ACGTTTGTAACGCCTG |
+| TCGGGGCCATTAAACA |
+| TTACTCGTCTCTCCGG |
+| GCATGGGCGACGTCAG |
+| AGGTAGGAAACATTTA |
 
 Table: barcode_ref
 
@@ -217,7 +221,7 @@ for( idx in 1:max_idx){
 ```
 
     ## [1] 1
-    ## Time difference of 6.948531 secs
+    ## Time difference of 6.99841 secs
 
 ``` r
 close(con)
