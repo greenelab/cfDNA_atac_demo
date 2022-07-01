@@ -139,7 +139,7 @@ fragment_df = cfdna_peak_df[,1:4]
 barcode_ref = stri_rand_strings(4000, 16, pattern = "[ACGT]")
 
 # assign barcode for each fragment
-# we repeats them to make indexing easier
+# we repeat them to make indexing easier
 barcode_vec = rep(barcode_ref, ceiling(nrow(fragment_df)/4000))
 barcode_vec = barcode_vec[1:nrow(fragment_df)]
 fragment_df = cbind(fragment_df, barcode_vec)
@@ -173,12 +173,12 @@ knitr::kable(head(barcode_ref_df), "simple", caption="Table: barcode_ref")
 
 | barcode_ref      |
 |:-----------------|
-| AGACGGCCACATCGAG |
-| ATTGTGCTACGTTCCT |
-| ACGTCCCGTGGATCGA |
-| GGGCATTCCGCGTAAG |
-| ACTAATTTAAACATGA |
-| GAATGACGTTGGCACT |
+| ATCATTGTGGATCGGT |
+| GCCAGATAGGGGGCTT |
+| TCTCTTGAATCATTAC |
+| TCCAGGTAGTCACCCA |
+| AATGCTGGATGTCGGC |
+| AGTCGCCAAAAGCCAT |
 
 Table: barcode_ref
 
@@ -197,42 +197,44 @@ peaks_df = data.table(cfdna_peak_df[,1:3])
 # write out the file
 con <- file(peaks_out_file,'wt')
 
-
-old <- Sys.time()
-
-max_idx = ceiling(nrow(peaks_df) / 10000000)
-for( idx in 1:max_idx){
-    start_idx = (idx-1)*10000000 +1
-    end_idx = (idx)*10000000
-    end_idx = min(end_idx, nrow(peaks_df))
-    curr_df = peaks_df[start_idx:end_idx,]
+iterate_peaks_file <- function(peaks_df, con){
+    on.exit(close(con))
     
-    feature_vec1 = paste(curr_df$V1, ":", curr_df$V2, "-", curr_df$V3, sep="")
+    old <- Sys.time()
     
-    write.table(data.frame(feature=feature_vec1, feature_name=start_idx:end_idx),
-                  con,
-                  append = TRUE,
-                  sep = '\t',
-                  row.names = FALSE,
-                  col.names = FALSE,
-                  quote=FALSE)
-    
-    feature_vec1 = c()
-    gc()
-    
-    print(idx)
-    new <- Sys.time() - old
-    print(new)
-
+    max_idx = ceiling(nrow(peaks_df) / 10000000)
+    for( idx in 1:max_idx){
+        start_idx = (idx-1)*10000000 +1
+        end_idx = (idx)*10000000
+        end_idx = min(end_idx, nrow(peaks_df))
+        curr_df = peaks_df[start_idx:end_idx,]
+        
+        feature_vec1 = paste(curr_df$V1, ":", curr_df$V2, "-", curr_df$V3, sep="")
+        
+        write.table(data.frame(feature=feature_vec1, feature_name=start_idx:end_idx),
+                      con,
+                      append = TRUE,
+                      sep = '\t',
+                      row.names = FALSE,
+                      col.names = FALSE,
+                      quote=FALSE)
+        
+        feature_vec1 = c()
+        gc()
+        
+        print(idx)
+        new <- Sys.time() - old
+        print(new)
+    }
 }
+
+iterate_peaks_file(peaks_df, con)
 ```
 
     ## [1] 1
-    ## Time difference of 2.886508 secs
+    ## Time difference of 2.691835 secs
 
 ``` r
-close(con)
-
 curr_df = NA
 peaks_df = NA
 
