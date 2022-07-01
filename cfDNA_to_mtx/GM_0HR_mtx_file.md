@@ -80,6 +80,11 @@ cfdna_peak_df = data.frame(fread(cfdna_peak_file, header=F))
 cfdna_peak_df$diff = cfdna_peak_df$V3-cfdna_peak_df$V2
 
 # make a quick plot
+# Our underlying belief about the process in which we see cfDNA 
+# is that we are finding DNA fragments that were nucleosomally protected, 
+# so the lengths of the reads should be a multiple of ~10.8. 
+# A fragment the length of ~11 means it was wrapped once, 
+# a length of 22 means it was wrapped twice, etc.
 subsample_idx = sort(sample(1:nrow(cfdna_peak_df), 1000000))
 gg = ggplot(cfdna_peak_df[subsample_idx,], aes(x=diff)) + 
         geom_histogram(binwidth=1) +
@@ -93,7 +98,8 @@ gg = ggplot(cfdna_peak_df[subsample_idx,], aes(x=diff)) +
             color="blue", linetype="dashed", size=0.5) +
         geom_vline(aes(xintercept=127),
             color="blue", linetype="dashed", size=0.5) +
-        theme_bw() + labs(x ="Fragment Length", y = "Count") 
+        theme_bw() + labs(x ="Fragment Length", y = "Count") +
+        ggtitle("Read lengths accumulate every 10.8 BP indicating nucleosome periodicity (blue lines are every 10BP)")
 gg
 ```
 
@@ -167,12 +173,12 @@ knitr::kable(head(barcode_ref_df), "simple", caption="Table: barcode_ref")
 
 | barcode_ref      |
 |:-----------------|
-| AAACACGCGACGTCAA |
-| GGACCGTAGAGTCGGA |
-| TCGGGGCTTTTTTTGA |
-| CTGAATTAGGTAAGCA |
-| CGGAGGCGGCTAACTA |
-| GCATTCCGCTTGTATA |
+| AGACGGCCACATCGAG |
+| ATTGTGCTACGTTCCT |
+| ACGTCCCGTGGATCGA |
+| GGGCATTCCGCGTAAG |
+| ACTAATTTAAACATGA |
+| GAATGACGTTGGCACT |
 
 Table: barcode_ref
 
@@ -222,7 +228,7 @@ for( idx in 1:max_idx){
 ```
 
     ## [1] 1
-    ## Time difference of 2.839547 secs
+    ## Time difference of 2.886508 secs
 
 ``` r
 close(con)
