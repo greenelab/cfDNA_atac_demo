@@ -99,7 +99,7 @@ gg = ggplot(cfdna_peak_df[subsample_idx,], aes(x=diff)) +
         geom_vline(aes(xintercept=127),
             color="blue", linetype="dashed", size=0.5) +
         theme_bw() + labs(x ="Fragment Length", y = "Count") +
-        ggtitle("Read lengths accumulate every 10.8 BP indicating nucleosome periodicity (blue lines are every 10BP)")
+        ggtitle("Read lengths accumulate every 10.8 BP indicating nucleosome periodicity \n(blue lines are every 10BP)")
 gg
 ```
 
@@ -173,12 +173,12 @@ knitr::kable(head(barcode_ref_df), "simple", caption="Table: barcode_ref")
 
 | barcode_ref      |
 |:-----------------|
-| ATCATTGTGGATCGGT |
-| GCCAGATAGGGGGCTT |
-| TCTCTTGAATCATTAC |
-| TCCAGGTAGTCACCCA |
-| AATGCTGGATGTCGGC |
-| AGTCGCCAAAAGCCAT |
+| TCCGAAACCCACACTG |
+| AGCTGACTATCCGAAT |
+| AGGCGAGGACTCGATG |
+| CTTGAAAGGCTAGTGG |
+| CTAAAAAAGACGTTTC |
+| GTTCTATGATTGGGCC |
 
 Table: barcode_ref
 
@@ -232,7 +232,7 @@ iterate_peaks_file(peaks_df, con)
 ```
 
     ## [1] 1
-    ## Time difference of 2.691835 secs
+    ## Time difference of 2.650561 secs
 
 ``` r
 curr_df = NA

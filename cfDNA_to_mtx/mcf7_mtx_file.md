@@ -173,12 +173,12 @@ knitr::kable(head(barcode_ref_df), "simple", caption="Table: barcode_ref")
 
 | barcode_ref      |
 |:-----------------|
-| CACAGCCGTTAGACCA |
-| CTGCCATCGCTGCATC |
-| GATCCATTTGCGGCTA |
-| TTGACTGAACTCAGAT |
-| ATCTTGGGACCTGGAA |
-| ATCCGGGCGTACAGCA |
+| CGTAGTTAAAGGATTC |
+| GATTTATGTGAAGGCG |
+| GTGTCAGATTTCGTGA |
+| GCCTGCGACCTGCCGT |
+| TCGTGGAACGATAGTT |
+| TGCCACCTTATTAATA |
 
 Table: barcode_ref
 
@@ -194,6 +194,21 @@ peaks_out_gzfile = paste0(proj_dir, "/data/data_alexis/mcf7_noTx_uniq_comb_pe/fe
 
 peaks_df = data.table(cfdna_peak_df[,1:3])
 
+knitr::kable(head(peaks_df), "simple", caption="Table: peaks_df")
+```
+
+| V1    |    V2 |    V3 |
+|:------|------:|------:|
+| chr11 | 60260 | 60415 |
+| chr11 | 60860 | 61032 |
+| chr11 | 61108 | 61278 |
+| chr11 | 61176 | 61350 |
+| chr11 | 61460 | 61602 |
+| chr11 | 62136 | 62279 |
+
+Table: peaks_df
+
+``` r
 # write out the file
 con <- file(peaks_out_file,'wt')
 
@@ -232,7 +247,7 @@ iterate_peaks_file(peaks_df, con)
 ```
 
     ## [1] 1
-    ## Time difference of 9.858561 secs
+    ## Time difference of 7.338547 secs
 
 ``` r
 curr_df = NA

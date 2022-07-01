@@ -117,7 +117,7 @@ gg = ggplot(cfdna_peak_df[subsample_idx,], aes(x=diff)) +
         geom_vline(aes(xintercept=127),
             color="blue", linetype="dashed", size=0.5) +
         theme_bw() + labs(x ="Fragment Length", y = "Count") +
-        ggtitle("Read lengths accumulate every 10.8 BP indicating nucleosome periodicity (blue lines are every 10BP)")
+        ggtitle("Read lengths accumulate every 10.8 BP indicating nucleosome periodicity \n(blue lines are every 10BP)")
 gg
 
 # match the correct read length
