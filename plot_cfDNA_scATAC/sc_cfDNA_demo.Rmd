@@ -180,7 +180,7 @@ VlnPlot(
   features = c('pct_reads_in_peaks', 'peak_region_fragments',
                'TSS.enrichment', 'blacklist_ratio', 'nucleosome_signal'),
   pt.size = 0.1,
-  ncol = 5
+  ncol = 2
 )
 
 ```
@@ -355,7 +355,8 @@ plot_fft = rbind(ctcf_fft_df, foxa1_fft_df)
 plot_fft = rbind(plot_fft, gata2_fft_df)
 ggplot(subset(plot_fft, freq < 0.05), aes(x = tf, y = log10(spec), fill=tf)) + geom_boxplot()
 
-saveRDS(footprint_df, "data/data_alexis/GM_0HR_footprints.RDS")
+out_dir = paste0(proj_dir, "/data/data_alexis/GM_0HR_footprints.RDS")
+saveRDS(footprint_df, out_dir)
 
 ```
 

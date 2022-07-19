@@ -7,6 +7,11 @@ sc_cfDNA_demo
 This file is an augmented version of the scATAC-seq analysis found here:
 <https://satijalab.org/signac/articles/pbmc_vignette.html>
 
+While the code for the vignette is mostly unchanged, the input data is
+cfDNA that has been preprocessed to be in the same format as scATAC-seq
+data. The preprocessing is done by another script in the repo:
+<https://github.com/nrosed/cfDNA_atac_demo/blob/main/cfDNA_to_mtx/GM_0HR_mtx_file.Rmd>
+
 This is the basis for the pseudobulk scATAC-Seq analysis and shows we
 can use the scATAC-Seq tools for cfDNA analysis.
 
@@ -213,7 +218,7 @@ VlnPlot(
   features = c('pct_reads_in_peaks', 'peak_region_fragments',
                'TSS.enrichment', 'blacklist_ratio', 'nucleosome_signal'),
   pt.size = 0.1,
-  ncol = 5
+  ncol = 2
 )
 ```
 
@@ -407,5 +412,6 @@ ggplot(subset(plot_fft, freq < 0.05), aes(x = tf, y = log10(spec), fill=tf)) + g
 <img src="sc_cfDNA_demo_files/figure-gfm/cubic_spline-5.png" style="display: block; margin: auto;" />
 
 ``` r
-saveRDS(footprint_df, "data/data_alexis/GM_0HR_footprints.RDS")
+out_dir = paste0(proj_dir, "/data/data_alexis/GM_0HR_footprints.RDS")
+saveRDS(footprint_df, out_dir)
 ```
