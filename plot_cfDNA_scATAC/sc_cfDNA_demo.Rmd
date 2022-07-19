@@ -41,7 +41,14 @@ proj_dir = here()
 
 This file is an augmented version of the scATAC-seq analysis found here: https://satijalab.org/signac/articles/pbmc_vignette.html
 
+
+While the code for the vignette is mostly unchanged, the input data is cfDNA that 
+has been preprocessed to be in the same format as scATAC-seq data.
+The preprocessing is done by another script in the repo:
+https://github.com/nrosed/cfDNA_atac_demo/blob/main/cfDNA_to_mtx/GM_0HR_mtx_file.Rmd
+
 This is the basis for the pseudobulk scATAC-Seq analysis and shows we can use the scATAC-Seq tools for cfDNA analysis.
+
 
 Taken directly from the vignette:
 
