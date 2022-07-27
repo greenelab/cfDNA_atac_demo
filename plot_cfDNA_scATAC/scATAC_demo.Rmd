@@ -304,56 +304,21 @@ now match clusters from RNA-Seq to ATAC-Seq
 #pbmc <- subset(pbmc, idents = 14, invert = TRUE)
 pbmc <- RenameIdents(
   object = pbmc,
-  '0' = 'CD14 Mono',
-  '1' = 'CD4 Memory',
-  '2' = 'CD8 Effector',
-  '3' = 'CD4 Naive',
-  '4' = 'CD14 Mono',
-  '5' = 'DN T',
-  '6' = 'CD8 Naive',
-  '7' = 'NK CD56Dim',
-  '8' = 'pre-B',
-  '9' = 'CD16 Mono',
-  '10' = 'pro-B',
-  '11' = 'DC',
-  '12' = 'NK CD56bright',
-  '13' = 'pDC'
+  '0' = 'Other',
+  '1' = 'Other',
+  '2' = 'Other',
+  '3' = 'Other',
+  '4' = 'Other',
+  '5' = 'Other',
+  '6' = 'Other',
+  '7' = 'Other',
+  '8' = 'B-cells',
+  '9' = 'Other',
+  '10' = 'B-cells',
+  '11' = 'Other',
+  '12' = 'Other',
+  '13' = 'Other'
 )
-pbmc <- RenameIdents(
-  object = pbmc,
-  'CD14 Mono' = 'Mono',
-  'CD4 Memory' = 'T-cells',
-  'CD8 Effector' = 'T-cells',
-  'CD4 Naive' = 'T-cells',
-  'CD14 Mono' = 'Mono',
-  'DN T' = 'T-cells',
-  'CD8 Naive' = 'T-cells',
-  'NK CD56Dim' = 'NK',
-  'pre-B' = 'B-cells',
-  'CD16 Mono' = 'Mono',
-  'pro-B' = 'pro-B',
-  'DC' = 'DC',
-  'NK CD56bright' = 'NK',
-  'pDC' = 'DC'
-)
-pbmc <- RenameIdents(
-  object = pbmc,
-  'Mono' = 'Other',
-  'T-cells' = 'Other',
-  'T-cells' = 'Other',
-  'T-cells' = 'Other',
-  'Mono' = 'Other',
-  'T-cells' = 'Other',
-  'T-cells' = 'Other',
-  'NK' = 'Other',
-  'B-cells' = 'B-cells',
-  'Mono' = 'Other',
-  'pro-B' = 'B-cells',
-  'DC' = 'Other',
-  'NK' = 'Other',
-  'DC' = 'Other'
-)
-
 ```
 
 
@@ -417,7 +382,7 @@ library(zoo)
 gg_footprint = ggplot(footprint_df, aes(x=position, y=norm.value, color=group)) + 
                 #geom_line() +
                 geom_line(aes(y=rollmean(norm.value, 100, na.pad=TRUE))) +
-                theme_bw() + theme(legend.position = "none", aspect.ratio = 9/16) +
+                theme_bw() + theme(aspect.ratio = 9/16) +
                 labs(x ="Position Along TFBS", y = "Normalized Count")
 gg_footprint
 
